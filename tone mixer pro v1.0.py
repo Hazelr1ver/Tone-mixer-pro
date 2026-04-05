@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import threading
 import tkinter as tk
 from collections import deque
@@ -8,10 +7,7 @@ from tkinter import ttk, messagebox
 import numpy as np
 import pyaudio
 
-# =========================================================
 # Settings
-# =========================================================
-
 SAMPLE_RATE = 44100
 BUFFER_SIZE = 1024
 WAVE_TYPES = ("sine", "square", "sawtooth", "triangle")
@@ -43,10 +39,7 @@ THEMES = {
     },
 }
 
-# =========================================================
 # Wave generation
-# =========================================================
-
 def waveform_from_phase(wave_type: str, phase: np.ndarray) -> np.ndarray:
     two_pi = 2.0 * np.pi
 
@@ -94,11 +87,7 @@ def samples_to_points(y: np.ndarray, w: int, h: int, y_scale: float = 0.40):
         points.extend([px, py])
     return points
 
-
-# =========================================================
 # Shared tone state
-# =========================================================
-
 @dataclass
 class Tone:
     tone_id: int
@@ -118,11 +107,7 @@ stream_running = True
 audio_paused = False
 master_volume = 0.5
 
-
-# =========================================================
 # Audio callback
-# =========================================================
-
 def audio_callback(in_data, frame_count, time_info, status):
     global stream_running, audio_paused, master_volume
 
@@ -155,12 +140,8 @@ def audio_callback(in_data, frame_count, time_info, status):
     int_samples = np.clip(waveform, -1.0, 1.0)
     int_samples = (int_samples * np.iinfo(np.int16).max).astype(np.int16)
     return (int_samples.tobytes(), pyaudio.paContinue)
-
-
-# =========================================================
+    
 # Theme setup
-# =========================================================
-
 def configure_theme(root, mode: str):
     palette = THEMES[mode]
     style = ttk.Style(root)
@@ -187,11 +168,7 @@ def configure_theme(root, mode: str):
     root.configure(bg=palette["bg"])
     return palette
 
-
-# =========================================================
 # Tone row
-# =========================================================
-
 class ToneRow:
     def __init__(self, parent, app, tone: Tone):
         self.app = app
@@ -347,11 +324,7 @@ class ToneRow:
     def remove(self):
         self.app.remove_tone(self.tone.tone_id)
 
-
-# =========================================================
 # Main app
-# =========================================================
-
 class ToneMixerApp:
     def update_tones_scrollregion(self, event=None):
         bbox = self.tones_canvas.bbox("all")
@@ -752,11 +725,7 @@ class ToneMixerApp:
                 self.p.terminate()
                 self.root.destroy()
 
-
-# =========================================================
 # Main
-# =========================================================
-
 def main():
     p = pyaudio.PyAudio()
     stream = p.open(
